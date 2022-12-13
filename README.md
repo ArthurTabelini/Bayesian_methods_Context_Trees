@@ -62,7 +62,7 @@ Os métodos são:
 
 #### Funcionamento da classe
 
-Em uma chamada da classe CTW, além da definição dos atributos, há o cálculo dos nós da árvore maximal usando o método $\textit{aux\_tree}$, com $lD$ iterações, onde $l$ é o número de folhas que há na profundidade maximal. Após isso, chamamos o método $\textit{get\_children\_parent}$ da classe Node, a partir do nó raíz, que constrói a relação entre pais e filhos dos nós da árvore. Estas relações são necessárias para os cálculos da probabilidade ponderada na raíz, $P_{w,\lambda}$ e para a probabilidade maximal, $P_{m,\lambda}$. Em seguida, obtemos a lista de folhas da árvore. A seguir, calculamos os vetores de contagem e os logaritmos das probabilidades estimadas dos contextos para as $D$ primeiras observações da amostra. Então, efetuamos esses mesmos cálculos para o resto da sequência, mas utilizando a atulização sequencial pelo método $\textit{seq\_update}$, como descrito na seção (\ref{sec 3.4}). Por último, usando o método $\textit{weighted\_prob}$ da classe Node, calculamos a probabilidade ponderada na raíz, $P_{w,\lambda}$, recursivamente, começando pelo nó raíz.
+Em uma chamada da classe CTW, além da definição dos atributos, há o cálculo dos nós da árvore maximal usando o método aux_tree, com $L_D$ iterações, onde $L_D$ é o número de folhas que há na profundidade maximal. Após isso, chamamos o método get_children_parent da classe Node, a partir do nó raíz, que constrói a relação entre pais e filhos dos nós da árvore. Estas relações são necessárias para os cálculos da probabilidade ponderada na raíz, $P_{w,\lambda}$ e para a probabilidade maximal, $P_{m,\lambda}$. Em seguida, obtemos a lista de folhas da árvore. A seguir, calculamos os vetores de contagem e os logaritmos das probabilidades estimadas dos contextos para as $D$ primeiras observações da amostra. Então, efetuamos esses mesmos cálculos para o resto da sequência, mas utilizando a atulização sequencial pelo método seq_update. Por último, usando o método weighted_prob da classe Node, calculamos a probabilidade ponderada na raíz, $P_{w,\lambda}$, recursivamente, começando pelo nó raíz.
 
 ### Classe Node 
 
@@ -83,7 +83,7 @@ Os atributos da classe Node são:
     
 - O logaritmo da probabilidade maximal para o algoritmo BCT;
     
-- Uma variável que indica se o primeiro termo é o máximo da expressão $(\ref{3.2})$ no passo $(ii)$ do algoritmo BCT. Este atriibuto é para ser usado na implementação do passo $(iii)$, no método $\textit{prune\_tree}$ da classe BCT;
+- Uma variável que indica se o primeiro termo é o máximo da expressão $\textrm{máx} ( \beta P_{e,s}, \textrm{ } (1 - \beta) \Pi_{j = 0}^{m - 1} P_{m,js})$ no passo $(ii)$ do algoritmo BCT. Este atriibuto é para ser usado na implementação do passo $(iii)$, no método prune_tree da classe BCT;
     
 - Uma variável booleana, que nos diz se o nó é o raíz;
     
@@ -105,7 +105,7 @@ E seus métodos são:
     
 - log_sum: calcula exatamente o logaritmo natural da soma em função dos logaritmos dos somandos com base na seguinte igualdade: $ln(a + b) = ln\{exp[ln(a) - ln(b)] + 1\} + ln(b)$;
     
-- next_update: recebe o parâmetro $\beta$ e o índice do elemento que sucede o contexto do nó na sequência. Calcula a atualização do logaritmo da probabilidade estimada do nó. É usado no método $\textit{seq\_update}$ da classe CTW;
+- next_update: recebe o parâmetro $\beta$ e o índice do elemento que sucede o contexto do nó na sequência. Calcula a atualização do logaritmo da probabilidade estimada do nó. É usado no método seq_update da classe CTW;
     
 - maximal_probability: calcula a probabilidade maximal do nó, como descrito no algoritmo BCT. É usado na classe BCT. 
     
@@ -120,77 +120,74 @@ Essa implementação também é feita com a ajuda da classe Node, como foi descr
 A classe BCT recebe como parâmetros os mesmos do algoritmo CTW. Seus atributos são:
 
 
-\begin{itemize}
-    \item A instância do CTW referente à amostra;
+- A instância do CTW referente à amostra;
     
-    \item As strings que representam as novas folhas da árvore podada;
+- As strings que representam as novas folhas da árvore podada;
     
-    \item A probabilidade a posteriori da árvore estimada.
+- A probabilidade a posteriori da árvore estimada.
     
-\end{itemize}
 
 Seus métodos são:
 
-\begin{itemize}
-    \item $\textit{prune\_tree}$: poda as folhas até chegar na árvore mais provável, de forma recursiva. Ele recebe o nó a partir do qual começamos a podar (na primeira chamada será sempre o nó raíz) e a profundidade da árvore a partir da qual podemos podar.;
+
+- prune_tree: poda as folhas até chegar na árvore mais provável, de forma recursiva. Ele recebe o nó a partir do qual começamos a podar (na primeira chamada será sempre o nó raíz) e a profundidade da árvore a partir da qual podemos podar.;
     
-    \item $\textit{tree\_is\_equal}$: compara a árvore estimada pelo método com a árvore recebida como parâmetro. Essa árvore é uma lista de strings que representam as folhas. Esse método é usado em algumas análises presentes no relatório. 
+- tree_is_equal: compara a árvore estimada pelo método com a árvore recebida como parâmetro. Essa árvore é uma lista de strings que representam as folhas. Esse método é usado em algumas análises presentes no relatório. 
     
-\end{itemize}
 
 
-\section{Implementação do algoritmo MCMC}
 
-Para as diferentes árvores que são criadas quando removemos e colocamos os filhos de um nó, criamos a classe $\textit{new\_Tree}$ para instanciar essas árvores mais duas outras funções.
+## Implementação do algoritmo MCMC
 
-\subsection{Classe \texorpdfstring{$\textit{new\_Tree}$}{} }
+Para as diferentes árvores que são criadas quando removemos e colocamos os filhos de um nó, criamos a classe new_Tree para instanciar essas árvores mais duas outras funções.
+
+### Classe new_Tree
 
 Esta classe recebe uma instância da classe CTW (pois iremos precisar da árvore maximal e de outros de seus atributos) e o dicionário contendo os nós da nova árvore. Seus atributos são:
 
-\begin{itemize}
-    \item O dicionário da árvore;
+
+- O dicionário da árvore;
     
-    \item A instância de CTW
+- A instância de CTW
     
-    \item O número de nós da árvore;
+- O número de nós da árvore;
     
-    \item Uma lista das strings que representam os contextos das folhas;
+- Uma lista das strings que representam os contextos das folhas;
     
-    \item O número de folhas da árvore na profundidade $D$;
+- O número de folhas da árvore na profundidade $D$;
     
-    \item Uma lista das strings dos contextos com apenas $m$ descendentes, onde $m$ é o tamanho do alfabeto. 
+- Uma lista das strings dos contextos com apenas $m$ descendentes, onde $m$ é o tamanho do alfabeto. 
     
-\end{itemize}
+
 
 Seus métodos são:
 
-\begin{itemize}
-    \item $\textit{add\_children}$: devolve uma nova instância de $\textit{new\_Tree}$ com os filhos do nó passado como parâmetro adicionados;
-    
-    \item $\textit{remove\_children}$: devolve uma nova instância de $\textit{new\_Tree}$ com os filhos do nó passado como parâmetro removidos;
-    
-    \item $\textit{compares\_trees}$: compara a árvore passada como parâmetro e a árvore $\textit{self}$, aquela a partir da qual o método é chamado. Retorna $\textbf{True}$ se forem iguais e $\textbf{False}$, caso contrário;
-    
-    \item $\textit{leaves}$: retorna a lista das strings que representam os contextos das folhas;
-    
-    \item $\textit{leaves\_D}$: retorna o número de folhas da árvore na profundidade $D$;
-    
-    \item $\textit{internal\_D}$: retorna a lista das strings dos contextos com apenas $m$ descendentes;
-    
-    \item $\textit{num\_bayes}$: retorna o logaritmo do numerador da fórmula de bayes como explicitado na última razão da equação $(\ref{3.5})$.
-    
-\end{itemize}
 
-\subsection{Outras funções do algoritmo}
-
-\begin{itemize}
-    \item $\textit{mult\_ratio}$: ela auxilia no cálculo da probabilidade de aceitação, calculando o número a ser multiplicado pela razão das probabilidades, como descrito pela equação $(\ref{eq 3.6})$. Recebe a instância da árvore que é o elemento atual da sequência, o novo elemento proposto para a sequência, a instância da classe CTW, o número máximo de nós que uma árvore com a profundidade maximal igual a da árvore maximal pode ter e uma variável de controle para nos dizer de que forma a nova árvore proposta foi formada, indicada no passo $(i)$ do algoritmo;
+- add_children: devolve uma nova instância de new_Tree com os filhos do nó passado como parâmetro adicionados;
     
-    \item $\textit{RW\_sampler}$: Nesta função usamos os atributos e métodos da classe $\textit{new\_Tree}$ para gerar a amostra, que é devolvida por ela.  Ela recebe a árvore inicial, que é formada por elementos da árvore maximal, o tamanho da amostra a ser gerada e a instância do CTW, ou os próprios parâmetros da classe CTW, que pode ser instanciada dentro da própria função. No caso de ser usada a mesma instância do CTW como parâmetro em várias chamadas, é preciso se atentar para o fato de a nossa implementação modificar a árvore maximal e, assim, implementar também um $\textit{reset}$ nela, definindo os filhos das folhas como o dicionário vazio.
+- remove_children: devolve uma nova instância de new_Tree com os filhos do nó passado como parâmetro removidos;
     
-\end{itemize}
+- compares_trees: compara a árvore passada como parâmetro e a árvore $\textit{self}$, aquela a partir da qual o método é chamado. Retorna $\textbf{True}$ se forem iguais e $\textbf{False}$, caso contrário;
+    
+- leaves: retorna a lista das strings que representam os contextos das folhas;
+    
+- leaves_D: retorna o número de folhas da árvore na profundidade $D$;
+    
+- internal_D: retorna a lista das strings dos contextos com apenas $m$ descendentes;
+    
+- num_bayes: retorna o logaritmo do numerador da fórmula de bayes como explicitado na razão da equação $\pi(\tau | x) = \frac{\pi(\tau) \prod_{s \in \tau} P_e (a_s)}{P_{w, \lambda}}$.
 
-Uma outra função, que não é extamente do algoritmo, mas que é essencial para estimarmos as probabilidades a posteriori das árvores da cadeia é $\textit{time\_list}$. Ela recebe a amostra gerada por $\textit{RW\_sampler}$ e retorna uma lista em que cada elemento é uma lista de três outros elementos: a proporção de tempo em que a cadeia passa em uma árvore, uma lista de strings dos contextos das folhas dessa árvore e o objeto da árvore correspondente. A lista maior é ordenada de forma decrescente com relação às proporções.
 
-A última função desse bloco é a $\textit{Bayesian\_MCMC}$. Ela recebe os mesmos argumentos que $\textit{RW\_sampler}$ e retorna a mesma lista que a função $\textit{time\_list}$ retorna.
+### Outras funções do algoritmo
+
+
+- mult_ratio: ela auxilia no cálculo da probabilidade de aceitação, calculando o número a ser multiplicado pela razão das probabilidades dado na definição de $r (\tau,\tau^{\prime})$. Recebe a instância da árvore que é o elemento atual da sequência, o novo elemento proposto para a sequência, a instância da classe CTW, o número máximo de nós que uma árvore com a profundidade maximal igual a da árvore maximal pode ter e uma variável de controle para nos dizer de que forma a nova árvore proposta foi formada, indicada no passo $(i)$ do algoritmo;
+    
+- RW_sampler: Nesta função usamos os atributos e métodos da classe new_Tree para gerar a amostra, que é devolvida por ela.  Ela recebe a árvore inicial, que é formada por elementos da árvore maximal, o tamanho da amostra a ser gerada e a instância do CTW, ou os próprios parâmetros da classe CTW, que pode ser instanciada dentro da própria função. No caso de ser usada a mesma instância do CTW como parâmetro em várias chamadas, é preciso se atentar para o fato de a nossa implementação modificar a árvore maximal e, assim, implementar também um $\textit{reset}$ nela, definindo os filhos das folhas como o dicionário vazio.
+    
+
+
+Uma outra função, que não é extamente do algoritmo, mas que é essencial para estimarmos as probabilidades a posteriori das árvores da cadeia é time_list. Ela recebe a amostra gerada por RW_sampler e retorna uma lista em que cada elemento é uma lista de três outros elementos: a proporção de tempo em que a cadeia passa em uma árvore, uma lista de strings dos contextos das folhas dessa árvore e o objeto da árvore correspondente. A lista maior é ordenada de forma decrescente com relação às proporções.
+
+A última função desse bloco é a Bayesian_MCMC. Ela recebe os mesmos argumentos que RW_sampler e retorna a mesma lista que a função time_list retorna. Para chamá-la faça Bayesian_MCMC(init_tree, n, ctw).
 
