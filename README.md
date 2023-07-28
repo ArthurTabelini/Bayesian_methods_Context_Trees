@@ -25,7 +25,7 @@ The parameters are the array with the last n elements of the chain, where n is t
 
 ## Simulate\_sample\_context\_list.py
 
-This file has the same functions described above except for extract_context, and instead of having to input a context matrix with None elements, one has only to input a context list still with the convention that the probabilities of each row of the transition matrix correspond to the context of same row number of the context matrix. 
+This file has the same functions described above except for extract_context, and instead of having to input a context matrix with $\textbf{None}$ elements, one has only to input a context list still with the convention that the probabilities of each row of the transition matrix correspond to the context of same row number of the context matrix. 
 
 
 # Bayesian Methods
