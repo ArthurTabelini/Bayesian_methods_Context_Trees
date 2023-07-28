@@ -1,6 +1,8 @@
 # Bayesian_methods_Context_Trees
 
-# VLMC simulation
+# VLMC simulation 
+
+## (Simulate\_sample)
 
 This code is written in Python and simulates a stochastic chain with memory of variable length accepting any number of contexts and states.
 
@@ -20,6 +22,11 @@ The parameters are the array with the last n elements of the chain, where n is t
 - next_state: Computes the next state of the chain, but doesn't return anything. Its parameters are: transition matrix, current context, context matrix, whole chain, current index of the chain array and the array of the uniforms (for checking the results).
 
 - simulate_sample: The main function of the code. Its parameters are the length of the chain, the transition matrix, the initial context to kick-start the chain and the context matrix. To call the function write simulate_sample(n, P, mat_cont).
+
+## (Simulate\_sample\_context\_list)
+
+This file has the same functions described above except for extract_context, and instead of having to input a context matrix with \textbf{None} elements, one has only to input a context list still with the convention that the probabilities of each row of the transition matrix correspond to the context of same row number of the context matrix. 
+
 
 # Bayesian Methods
 
